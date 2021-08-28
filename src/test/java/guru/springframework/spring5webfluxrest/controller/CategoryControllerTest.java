@@ -13,6 +13,8 @@ import reactor.core.publisher.Mono;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 public class CategoryControllerTest {
 
@@ -81,17 +83,38 @@ public class CategoryControllerTest {
     }
 
     @Test
-    public void TestPatch() {
+    public void TestPatchWithCHanges() {
        BDDMockito.given(categoryRepository.findById(anyString()))
                .willReturn(Mono.just(Category.builder().build()));
 
        BDDMockito.given(categoryRepository.save(any(Category.class))).willReturn(Mono.just(Category.builder().build()));
-        Mono<Category> catUpdateMono = Mono.just(Category.builder().description("Some Cat").build());
+        Mono<Category> catUpdateMono = Mono.just(Category.builder().description("New Description").build());
 
         webTestClient.patch().uri("/api/v1/categories/asdfasdf")
                 .body(catUpdateMono, Category.class)
                 .exchange()
                 .expectStatus()
                 .isOk();
+
+        verify(categoryRepository).save(any());
+    }
+
+    @Test
+    public void TestPatchNoChanges() {
+        BDDMockito.given(categoryRepository.findById(anyString()))
+                .willReturn(Mono.just(Category.builder().build()));
+
+        BDDMockito.given(categoryRepository.save(any(Category.class))).willReturn(Mono.just(Category.builder().build()));
+        Mono<Category> catUpdateMono = Mono.just(Category.builder().build());
+
+        webTestClient.patch().uri("/api/v1/categories/asdfasdf")
+                .body(catUpdateMono, Category.class)
+                .exchange()
+                .expectStatus()
+                .isOk();
+
+
+        verify(categoryRepository, never()).save(any());
+
     }
 }
