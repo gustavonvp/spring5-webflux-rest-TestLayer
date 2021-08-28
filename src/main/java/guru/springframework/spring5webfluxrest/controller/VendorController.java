@@ -1,9 +1,11 @@
 package guru.springframework.spring5webfluxrest.controller;
 
+import guru.springframework.spring5webfluxrest.domain.Category;
 import guru.springframework.spring5webfluxrest.domain.Vendor;
 import guru.springframework.spring5webfluxrest.repository.VendorRepository;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.reactivestreams.Publisher;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -16,7 +18,7 @@ public class VendorController {
         this.vendorRepository = vendorRepository;
     }
 
-    @GetMapping("/api/v1/vendors/")
+    @GetMapping("/api/v1/vendors")
     public Flux<Vendor> list() {
         return vendorRepository.findAll();
     }
@@ -25,6 +27,14 @@ public class VendorController {
     public Mono<Vendor> getById(String id) {
         return vendorRepository.findById(id);
     }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/api/v1/vendors")
+    Mono<Void> create(@RequestBody Publisher<Vendor> vendorStream) {
+        return vendorRepository.saveAll(vendorStream).then();
+    }
+
+
 
 
 
