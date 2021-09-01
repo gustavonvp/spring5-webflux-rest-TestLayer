@@ -1,6 +1,7 @@
 package guru.springframework.spring5webfluxrest.bootstrap;
 
 import guru.springframework.spring5webfluxrest.domain.Category;
+import guru.springframework.spring5webfluxrest.domain.Customer;
 import guru.springframework.spring5webfluxrest.domain.Vendor;
 import guru.springframework.spring5webfluxrest.repository.CategoryRepository;
 import guru.springframework.spring5webfluxrest.repository.VendorRepository;
@@ -20,12 +21,10 @@ public class Bootstrap implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        System.out.println("##### LOADING DATA ON BOOTSTRAP ######");
 
         if(categoryRepository.count().block() == 0) {
             //load data
-            System.out.println("##### LOADING DATA ON BOOTSTRAP ######");
-
-
             categoryRepository.save(Category.builder().description("Fruits").build()).block();
 
             categoryRepository.save(Category.builder().description("Nuts").build()).block();
@@ -36,7 +35,7 @@ public class Bootstrap implements CommandLineRunner {
 
             categoryRepository.save(Category.builder().description("Eggs").build()).block();
 
-            System.out.println("Loaded Categories: " + categoryRepository.count().block());
+
 
 
             vendorRepository.save(Vendor.builder().firstName("Joe").lastName("Buck").build()).block();
@@ -49,10 +48,10 @@ public class Bootstrap implements CommandLineRunner {
 
             vendorRepository.save(Vendor.builder().firstName("Jimmy").lastName("York").build()).block();
 
-
-            System.out.println("Loaded Vendors: " + categoryRepository.count().block());
-
         }
-
+        System.out.println("Loaded Categories: " + categoryRepository.count().block());
+        System.out.println("Loaded Vendors: " + categoryRepository.count().block());
     }
+
+
 }
